@@ -1,0 +1,59 @@
+- name: Copy .key and .pem files
+  hosts: servers
+  vars:
+    baseurl_gub_apache: /opt/gub-apache2/ssl
+    baseurl_etc: /etc/ssl
+    baseurl_src: /path/to/files
+
+  tasks:
+    - name: Ping my hosts
+      ansible.builtin.ping:
+
+    - name: Copy .key file
+      ansible.builtin.copy:
+        src: "{{baseurl_src}}/ub-gu-se.key"
+        dest: "{{baseurl_gub_apache}}/private/ub-gu-se.key"
+        owner: root
+        group: root
+        mode: "0600"
+      become: yes
+      when: gub_apache is defined and gub_apache == 'TRUE'
+
+    - name: Copy .pem file
+      ansible.builtin.copy:
+        src: "{{baseurl_src}}/ub-gu-se.pem"
+        dest: "{{baseurl_gub_apache}}/certs/ub-gu-se.pem"
+        owner: root
+        group: root
+        mode: "0600"
+      become: yes
+      when: gub_apache is defined and gub_apache == 'TRUE'
+
+    - name: restart apache2
+      ansible.builtin.shell: /usr/local/bin/restart-gub-apache.sh
+      when: gub_apache is defined and gub_apache == 'TRUE'
+
+    - name: Copy .key file
+      ansible.builtin.copy:
+        src: "{{baseurl_src}}/ub-gu-se.key"
+        dest: "{{baseurl_etc}}/private/ub-gu-se.key"
+        owner: root
+        group: root
+        mode: "0600"
+      become: yes
+      when: gub_apache is undefined or gub_apache == 'FALSE'
+
+    - name: Copy .pem file
+      ansible.builtin.copy:
+        src: "{{baseurl_src}}/ub-gu-se.pem"
+        dest: "{{baseurl_etc}}/certs/ub-gu-se.pem"
+        owner: root
+        group: root
+        mode: "0600"
+      become: yes
+      when: gub_apache is undefined or gub_apache == 'FALSE'
+
+    - name: restart apache2
+      ansible.builtin.shell: service apache2 restart
+      when: gub_apache is undefined or gub_apache == 'FALSE'
+      become: yes
