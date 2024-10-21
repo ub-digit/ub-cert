@@ -3,7 +3,7 @@
   vars:
     baseurl_gub_apache: /opt/gub-apache2/ssl
     baseurl_etc: /etc/ssl
-    baseurl_src: /path/to/files
+    baseurl_src: /Users/xljoha/Desktop/certs
 
   tasks:
     - name: Ping my hosts
@@ -29,9 +29,9 @@
       become: yes
       when: gub_apache is defined and gub_apache == 'TRUE'
 
-    - name: restart apache2
-      ansible.builtin.shell: /usr/local/bin/restart-gub-apache.sh
-      when: gub_apache is defined and gub_apache == 'TRUE'
+    # - name: restart apache2
+    #   ansible.builtin.shell: /usr/local/bin/restart-gub-apache.sh
+    #   when: gub_apache is defined and gub_apache == 'TRUE'
 
     - name: Copy .key file
       ansible.builtin.copy:
@@ -53,7 +53,7 @@
       become: yes
       when: gub_apache is undefined or gub_apache == 'FALSE'
 
-    - name: restart apache2
-      ansible.builtin.shell: service apache2 restart
-      when: gub_apache is undefined or gub_apache == 'FALSE'
-      become: yes
+    # - name: restart apache2
+    #   ansible.builtin.shell: service apache2 restart
+    #   when: gub_apache is undefined or gub_apache == 'FALSE'
+    #   become: yes
